@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>MyBlog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <header>
+      <button id="addNewEntry" onclick="addNewEntry()"></button>
+      <button id="changeLang" onclick="changeLang()"></button>
+    </header>
+    <div id="entries"></div>
+    <div id="newEntryModal">
+      <button id="closeModal" onclick="closeModal()"></button>
+      <input id="elementID" type="text">
+      <input id="newEntryTitle" type="text">
+      <textarea id="newEntryContent"></textarea>
+      <button id="submitNewEntry" onclick="submitNewEntry()"></button>
+    </div>
+    <script src="js/storage.js"></script>
+    <script src="js/langs.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>
