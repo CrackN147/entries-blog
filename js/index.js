@@ -1,46 +1,30 @@
-const checkLang = () => {
-  let defaultLang = "ka";
-  let currentLang = getData("lang");
-  if (!currentLang) {
-    setData("lang", defaultLang);
-    return defaultLang;
-  }
-  return currentLang;
-}
-
-const changeLang = () => {
-  let currentLang = getData("lang");
-  if (currentLang === "ka") {
-    setData("lang", "en");
-  } else {
-    setData("lang", "ka");
-  }
-  generateLangs();
-}
+//I put all the repatable variables outside of Functions
+let entries = getData("entries");
+let entriesContainer = document.getElementById("entries");
+let elementID = document.getElementById("elementID");
+let submitButton = document.getElementById("submitNewEntry");
+let newEntryModal = document.getElementById("newEntryModal");
+let newEntryTitle = document.getElementById("newEntryTitle");
+let newEntryContent = document.getElementById("newEntryContent");
+let date = new Date();
+let lang = "ka";
 
 const addNewEntry = () => {
-  let elementID = document.getElementById("elementID");
-  let submitButton = document.getElementById("submitNewEntry");
-  submitButton.innerText = elementID.value ? langs[checkLang()].editEntry : langs[checkLang()].submitNewEntry;
-  let newEntryModal = document.getElementById("newEntryModal");
+  submitButton.innerText = elementID.value ? langs[lang].editEntry : langs[lang].submitNewEntry;
   document.body.classList.add("modal-open");
   newEntryModal.style.display = "flex";
 }
 
 const closeModal = () => {
-  let newEntryModal = document.getElementById("newEntryModal");
-  let newEntryTitle = document.getElementById("newEntryTitle");
-  let newEntryContent = document.getElementById("newEntryContent");
-  let elementID = document.getElementById("elementID");
   document.body.classList.remove("modal-open");
   newEntryModal.style.display = "none";
   newEntryTitle.value = "";
   newEntryContent.value = "";
   elementID.value = "";
+  newEntryTitle.classList.remove("invalid");
 }
 
 const generateID = () => {
-  let entries = getData("entries");
   if (entries && entries.length > 0) {
     entries = entries.sort((a, b) => {
       return a.id - b.id;
@@ -51,13 +35,14 @@ const generateID = () => {
 }
 
 const submitNewEntry = () => {
-  let elementID = document.getElementById("elementID");
   if (elementID.value) {
     return submitEditedEntry();
   }
-  let newEntryTitle = document.getElementById("newEntryTitle");
-  let newEntryContent = document.getElementById("newEntryContent");
-  let date = new Date();
+    //new feature-if title imput is empty does not allow you to add a new entry
+  if (newEntryTitle.value.trim() === "") {
+    newEntryTitle.classList.add("invalid");
+    newEntryTitle.placeholder = "Name field is empty"; }
+    else {
   let data = {
     id: generateID(),
     date: (date.getTime() / 1000) + "/" + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(),
@@ -71,17 +56,16 @@ const submitNewEntry = () => {
   entries.push(data);
   setData("entries", entries);
   processHTMLForEntry(data);
-  newEntryTitle.value = "";
-  newEntryContent.value = "";
   closeModal();
+}
 }
 
 const submitEditedEntry = () => {
-  let entries = getData("entries");
-  let elementID = document.getElementById("elementID");
-  let newEntryTitle = document.getElementById("newEntryTitle");
-  let newEntryContent = document.getElementById("newEntryContent");
-  let date = new Date();
+   //new feature-if title imput is empty does not allow you to edit entry
+  if (newEntryTitle.value.trim() === "") {
+    newEntryTitle.classList.add("invalid");
+    newEntryTitle.placeholder = "Name field is empty"; }
+    else {
   let data = {
     id: parseInt(elementID.value),
     date: (date.getTime() / 1000) + "/" + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(),
@@ -105,6 +89,7 @@ const submitEditedEntry = () => {
   newEntryContent.value = "";
   closeModal();
 }
+}
 
 const deleteEntry = (id) => {
   let entries = getData("entries");
@@ -119,9 +104,6 @@ const editEntry = (id) => {
   if (entries) {
     let entry = entries.find((entry) => entry.id === id);
     if (entry) {
-      let newEntryTitle = document.getElementById("newEntryTitle");
-      let newEntryContent = document.getElementById("newEntryContent");
-      let elementID = document.getElementById("elementID");
       newEntryTitle.value = entry.title;
       newEntryContent.value = entry.content;
       elementID.value = id;
@@ -151,7 +133,6 @@ const processHTMLElement = (typeOf, className, params) => {
 }
 
 const processHTMLForEntry = (entry) => {
-  let entriesContainer = document.getElementById("entries");
   let entryContainer = processHTMLElement("div", "entry", {
     id: "entry-" + entry.id
   });
@@ -181,8 +162,6 @@ const processHTMLForEntry = (entry) => {
 }
 
 const generateEntries = () => {
-  let entries = getData("entries");
-  let entriesContainer = document.getElementById("entries");
   if (entries) {
     entriesContainer.innerHTML = "";
     entries.forEach((entry) => {
@@ -192,24 +171,27 @@ const generateEntries = () => {
 }
 
 const generateLangs = () => {
-  let lang = checkLang();
-  let addNewEntry = document.getElementById("addNewEntry");
-  let newEntryTitle = document.getElementById("newEntryTitle");
-  let newEntryContent = document.getElementById("newEntryContent");
-  let submitNewEntry = document.getElementById("submitNewEntry");
-  let changeLang = document.getElementById("changeLang");
-  let closeModal = document.getElementById("closeModal");
-
-  addNewEntry.innerText = langs[lang].addNewEntry;
-  newEntryTitle.setAttribute("placeholder", langs[lang].newEntryTitle);
-  newEntryContent.setAttribute("placeholder", langs[lang].newEntryContent);
-  submitNewEntry.innerText = langs[lang].submitNewEntry;
-  changeLang.innerText = lang === "ka" ? "en" : "ka";
-  closeModal.innerText = langs[lang].closeModal;
+  // changes every element content according to their id
+  document.getElementById("addNewEntry").textContent = langs[lang].addNewEntry;
+  document.getElementById("changeLang").textContent = langs[lang].changeLang;
+  document.getElementById("closeModal").textContent = langs[lang].closeModal;
+  document.getElementById("submitNewEntry").textContent = langs[lang].submitNewEntry;
+  document.getElementById("newEntryTitle").placeholder = langs[lang].newEntryTitle;
+  document.getElementById("newEntryContent").placeholder = langs[lang].newEntryContent;
 }
+// Initialize the language to "ka"
+generateLangs(lang);
+// Add event listener to handle language change
+document.getElementById("changeLang").addEventListener("click", function() {
+  lang = lang === "ka" ? "en" : "ka";
+  generateLangs(lang);
+});
+
 const general = () => {
+  processHTMLElement();
   generateLangs();
   generateEntries();
 }
 
 general();
+

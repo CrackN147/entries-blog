@@ -1,4 +1,4 @@
-const langs = {
+let langs = {
   ka: {
     addNewEntry: "ახალი ჩანაწერი",
     newEntryTitle: "სათაური",
@@ -6,6 +6,7 @@ const langs = {
     submitNewEntry: "დამატება",
     editEntry: "რედაქტირება",
     closeModal: "ხ",
+    changeLang: "KA",
   },
   en: {
     addNewEntry: "Add new entry",
@@ -14,5 +15,6 @@ const langs = {
     submitNewEntry: "Submit",
     editEntry: "Edit",
     closeModal: "X",
+    changeLang: "EN",
   }
 }
